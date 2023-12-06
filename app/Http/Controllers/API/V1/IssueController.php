@@ -15,6 +15,7 @@ class IssueController extends Controller
     public function index(): AnonymousResourceCollection
     {
         //todo validation,  can use IssueResource::collection or IssueCollection
+
         return IssueResource::collection(
             Cache::tags(['issues'])
                 ->remember(

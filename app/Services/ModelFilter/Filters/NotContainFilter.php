@@ -7,11 +7,17 @@ use Illuminate\Database\Eloquent\Builder;
 
 class NotContainFilter extends Filter
 {
+    public function __construct(Builder $query, string $column, string $value)
+    {
+        parent::__construct($query, $column, $value);
+    }
+
     public function apply(): void
     {
-        foreach ($this->values as $key => $value) {
-            $method = (!$this->and && array_key_first($this->values) !== $key) ? 'orWhere' : 'where';
-            $this->query->{$method}($this->column, 'not like', "%{$value}%");
+        if (empty($this->values)) {
+            return;
         }
+
+        $this->query->whereNot(fn(Builder $q) => $q->whereFullText($this->column, $this->values, ['mode' => 'boolean']));
     }
 }

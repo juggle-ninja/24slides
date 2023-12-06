@@ -18,10 +18,8 @@ trait Filterable
 
         /** @var FilterService $filterService */
         $filterService = app(FilterService::class);
-
         $filterService->apply($query, $filters);
 
-        dump($query->toRawSql());
         return $query;
     }
 

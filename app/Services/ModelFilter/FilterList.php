@@ -4,9 +4,10 @@ namespace App\Services\ModelFilter;
 
 use App\Services\ModelFilter\Filters\ContainsFilter;
 use App\Services\ModelFilter\Filters\InFilter;
-use App\Services\ModelFilter\Filters\IsFilter;
-use App\Services\ModelFilter\Filters\IsNotFilter;
+use App\Services\ModelFilter\Filters\EqualsFilter;
+use App\Services\ModelFilter\Filters\NotEqualFilter;
 use App\Services\ModelFilter\Filters\NotContainFilter;
+use App\Services\ModelFilter\Filters\NotInFilter;
 
 class FilterList
 {
@@ -20,16 +21,17 @@ class FilterList
     private function initFilters(): void
     {
         $this->filters = [
-            'is' => IsFilter::class, // column = value
-            'in_not' =>  IsNotFilter::class, //column != value
-            'in' => InFilter::class, //column in (values)
-            'contains' => ContainsFilter::class, //column like %value%,
-            'not_contain' => NotContainFilter::class //column not like %value%
+            'is' => EqualsFilter::class,
+            '!is' => NotEqualFilter::class,
+            'in' => InFilter::class,
+            '!in' => NotInFilter::class,
+            'contain' => ContainsFilter::class,
+            '!contain' => NotContainFilter::class
         ];
     }
 
     public function get(string $operator): ?string
     {
-        return $this->filters[$operator];
+        return @$this->filters[$operator];
     }
 }

@@ -4,8 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-return new class extends Migration
-{
+return new class extends Migration {
     /**
      * Run the migrations.
      */
@@ -16,13 +15,16 @@ return new class extends Migration
             $table->foreignId('assigner_id')->constrained('users');
             $table->foreignId('assignee_id')->constrained('users');
             $table->string('title');
-            $table->text('description');
+            $table->text('description')->fulltext();
 
             $table->unsignedSmallInteger('priority')
-                ->default(\App\Enums\IssuePriority::Low->value);
+                ->default(\App\Enums\IssuePriority::Low->value)
+                ->index();
             $table->unsignedSmallInteger('status_id')
-                ->default(\App\Enums\IssueStatus::Todo->value);
-            $table->unsignedSmallInteger('story_points');
+                ->default(\App\Enums\IssueStatus::Todo->value)
+                ->index();
+            $table->unsignedSmallInteger('story_points')
+                ->index();
 
             $table->timestamps();
         });

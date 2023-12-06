@@ -5,7 +5,7 @@ namespace App\Services\ModelFilter\Filters;
 use App\Services\ModelFilter\Filter;
 use Illuminate\Database\Eloquent\Builder;
 
-class ContainsFilter extends Filter
+class NotEqualFilter extends Filter
 {
     public function __construct(Builder $query, string $column, string $value)
     {
@@ -14,10 +14,6 @@ class ContainsFilter extends Filter
 
     public function apply(): void
     {
-        if (empty($this->values)) {
-            return;
-        }
-
-        $this->query->whereFullText($this->column, $this->values, ['mode' => 'boolean']);
+        $this->query->whereNot($this->column, $this->values);
     }
 }

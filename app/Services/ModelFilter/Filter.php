@@ -10,10 +10,8 @@ abstract class Filter
     public function __construct(
         protected Builder $query,
         protected string $column,
-        protected array $values,
-        protected $and = true //logic and|or
-    )
-    {
+        protected array|string $values
+    ) {
     }
 
     abstract public function apply(): void;

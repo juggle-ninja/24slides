@@ -18,53 +18,35 @@ class FilterService
 
     public function apply(Builder $query, array $filters): void
     {
-        $logic = \request()->query('logic', 'and');
+        $queryLogic = \request()->query('logic', 'and');
 
         $availableFields = $this->model->getAvailableFilterFields();
 
-        foreach ($filters as $filterField => $fieldFilters) {
+        foreach ($filters as $key => $value) {
+            if (str_contains($key, ':')) {
+                [$logic, $filterField] = explode(':', $key);
+            } else {
+                [$logic, $filterField] = ['is', $key];
+            }
             throw_unless(
                 in_array($filterField, $availableFields),
-                "You can`t use the '{$filterField}' property for filtering"
+                "'{$filterField}' property is not available for filtering"
             );
 
-            $method = ($filterField !== array_key_first($filters) && $logic === 'or') ? 'orWhere' : 'where';
-            $query->{$method}(fn(Builder $q) => $this->applyField($q, $filterField, $fieldFilters));
+            $method = ($filterField !== array_key_first($filters) && $queryLogic === 'or') ? 'orWhere' : 'where';
+            $query->{$method}(fn(Builder $q) => $this->applyFieldFilter($q, $filterField, $value, $logic));
         }
     }
 
-    public function applyField(Builder $q, string $field, array $filters): void
+    public function applyFieldFilter(Builder $q, string $field, array|string $values, string $logic): void
     {
-        throw_if(
-            str_starts_with(array_key_first($filters), 'or_'),
-            'The first element of a property filter must not be prefixed with "or_"'
-        );
+        $filterClass = $this->filterList->get($logic);
 
-        foreach ($filters as $filterLogic => $values) {
-            if (str_starts_with($filterLogic, 'or_')) {
-                $filterLogic = ltrim($filterLogic, 'or_');
-                $this->applyFieldFilter($q, $field, $filterLogic, $values, false);
-            } else {
-                $this->applyFieldFilter($q, $field, $filterLogic, $values);
-            }
-        }
-    }
-
-    public function applyFieldFilter(
-        Builder $query,
-        string $field,
-        string $operator,
-        array|string $values,
-        bool $and = true
-    ): void {
-        $filterClass = $this->filterList->get($operator);
-        is_array($values) || $values = [$values];
-
-        throw_unless($filterClass, "Undefined filter operator '{$operator}'.");
+        throw_unless($filterClass, "Undefined filter logic '{$logic}'.");
 
         /** @var Filter $filter */
-        $filter = new $filterClass($query, $field, $values, $and);
-
+        $filter = new $filterClass($q, $field, $values);
         $filter->apply();
+
     }
 }
