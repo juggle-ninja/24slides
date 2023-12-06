@@ -1,0 +1,15 @@
+[90m= [39m[
+    [34;4mApp\Enums\IssuePriority[39;24m {#6253
+      +[1mname[22m: "[32mLow[39m",
+      +[1mvalue[22m: [35m1[39m,
+    },
+    [34;4mApp\Enums\IssuePriority[39;24m {#6246
+      +[1mname[22m: "[32mMedium[39m",
+      +[1mvalue[22m: [35m2[39m,
+    },
+    [34;4mApp\Enums\IssuePriority[39;24m {#6245
+      +[1mname[22m: "[32mHigh[39m",
+      +[1mvalue[22m: [35m3[39m,
+    },
+  ]
+
