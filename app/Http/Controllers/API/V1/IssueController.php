@@ -7,14 +7,14 @@ use App\Http\Controllers\Controller;
 use App\Http\Resources\API\V1\IssueResource;
 use App\Models\Issue;
 use Illuminate\Http\Request;
+use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
 use Illuminate\Support\Facades\Cache;
 
 class IssueController extends Controller
 {
-    public function index()
+    public function index(): AnonymousResourceCollection
     {
-        //todo validation
-
+        //todo validation,  can use IssueResource::collection or IssueCollection
         return IssueResource::collection(
             Cache::tags(['issues'])
                 ->remember(
