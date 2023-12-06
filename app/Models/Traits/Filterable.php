@@ -21,6 +21,7 @@ trait Filterable
 
         $filterService->apply($query, $filters);
 
+        dump($query->toRawSql());
         return $query;
     }
 
