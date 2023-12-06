@@ -2,7 +2,7 @@
 
 namespace App\Models\Traits;
 
-use App\Services\ModelFilterService;
+use App\Services\FilterService;
 use App\Services\ModelFilter\FilterList;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
@@ -10,15 +10,16 @@ use Illuminate\Support\Facades\Schema;
 
 trait Filterable
 {
-    public function scopeFilter(Builder $query, ?array $filters = null): Builder
+    public function scopeFilter(Builder $query): Builder
     {
         $this->initFilter();
 
-        if (is_null($filters)) {
-            $filters = request()->query('filters', []);
-        }
+        $filters = request()->query('filters', []);
 
-        app(ModelFilterService::class)->apply($query, $filters);
+        /** @var FilterService $filterService */
+        $filterService = app(FilterService::class);
+
+        $filterService->apply($query, $filters);
 
         return $query;
     }
@@ -26,12 +27,12 @@ trait Filterable
     private function initFilter(): void
     {
         app()->singleton(FilterList::class, fn() => new FilterList());
-        app()->when(ModelFilterService::class)->needs(Model::class)->give(fn() => $this);
+        app()->when(FilterService::class)->needs(Model::class)->give(fn() => $this);
     }
 
     public function getAvailableFilterFields(): array
     {
-        //todo add ability to provide custom relation filters
-        return Schema::getColumns($this->getTable());
+        //todo add logic for relation
+        return $this->filterFields ?? Schema::getColumns($this->getTable());
     }
 }

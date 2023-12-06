@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Services\ModelFilterService;
+namespace App\Services\ModelFilter;
 
 
 use Illuminate\Database\Eloquent\Builder;
@@ -10,14 +10,11 @@ abstract class Filter
     public function __construct(
         protected Builder $query,
         protected string $column,
-        protected array $values
-    ) {}
-
-    abstract function apply(): Builder;
-
-    public static function operator(): string
+        protected array $values,
+        protected $and = true //logic and|or
+    )
     {
-        return static::$operator;
     }
 
+    abstract public function apply(): void;
 }

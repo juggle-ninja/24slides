@@ -2,19 +2,28 @@
 
 namespace App\Http\Controllers\API\V1;
 
+use App\Helpers\GlobalHelper;
 use App\Http\Controllers\Controller;
 use App\Http\Resources\API\V1\IssueResource;
 use App\Models\Issue;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Cache;
 
 class IssueController extends Controller
 {
-    public function index(Request $request)
+    public function index()
     {
+        //todo validation
+
         return IssueResource::collection(
-            Issue::query()
-                ->filter()
-                ->paginate()
+            Cache::tags(['issues'])
+                ->remember(
+                    GlobalHelper::getCacheKey(),
+                    60 * 60,
+                    fn() => Issue::query()
+                        ->filter()
+                        ->paginate()
+                )
         );
     }
 
