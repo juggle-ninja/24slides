@@ -12,9 +12,10 @@ use Illuminate\Support\Facades\Cache;
 
 class IssueController extends Controller
 {
+    // todo _invoke would have sufficed
     public function index(): AnonymousResourceCollection
     {
-        //todo validation,  can use IssueResource::collection or IssueCollection
+        //todo validation,  IssueResource::collection -> IssueCollection
 
         return IssueResource::collection(
             Cache::tags(['issues'])
