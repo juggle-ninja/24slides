@@ -8,7 +8,7 @@ class InFilter extends Filter
 {
     public function apply(): void
     {
-        $values = is_array($this->values) ?: explode(',', (string) $this->values);
+        $values = is_array($this->values) ? $this->values : explode(',', (string)$this->values);
         $this->query->whereIn($this->column, $values);
     }
 }
