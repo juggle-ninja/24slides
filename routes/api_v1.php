@@ -19,5 +19,7 @@ use Illuminate\Support\Facades\Route;
 //    return $request->user();
 //});
 
-Route::apiResource('issues', APIv1\IssueController::class)
-    ->only('index');
+Route::apiResource('issues', APIv1\IssueController::class)->only('index');
+Route::get('issues/filters', [APIv1\IssueController::class, 'filters'])->name('issues.filters');
+
+

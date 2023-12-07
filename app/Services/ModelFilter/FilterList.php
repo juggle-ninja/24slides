@@ -34,4 +34,12 @@ class FilterList
     {
         return @$this->filters[$operator];
     }
+
+    public function getFiltersInfo(): array
+    {
+        return collect($this->filters)->map(
+            fn($class) => rtrim((new \ReflectionClass($class))->getShortName(), 'Filter')
+        )
+            ->all();
+    }
 }
