@@ -40,6 +40,6 @@ class FilterList
         return collect($this->filters)->map(
             fn($class) => rtrim((new \ReflectionClass($class))->getShortName(), 'Filter')
         )
-            ->all();
+            ->toArray();
     }
 }
